@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: "Montserrat";
+  font-size: 20px;
+}
+section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  background-color: rgb(37, 37, 37);
+  flex-direction: column;
+  padding: 50px 0;
+}
+section h1 {
+  color: rgba(255, 255, 255, 0.322);
+  text-align: center;
+  width: 100%;
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+section p {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.322);
+  width: 100%;
+  margin-bottom: 40px;
+}
+.container {
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto;
+  justify-content: center;
+}
+.texts p {
+  color: black;
+  text-align: left;
+  width: 100%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.texts p.replay {
+  text-align: right;
+}
+
+</style>
+</head>
+<body>
+    <section>
+        <h1>Speech <br> Recognition</h1>
+        <div class="container">
+            <div class="texts">
+                <p>Hello World</p>
+                <button onclick="start()">Start</button>
+                <button onclick="stop()">Stop</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+// getting the access to mainDiv
+const mainDiv = document.querySelector(".texts");
+
+// flag to determine if the session is active
+let isSessionActive = false;
+
+// getting property from the browser
+window.SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+// creating the instance of SpeechRecognition to record speech.
+const recognition = new SpeechRecognition();
+
+// making it realtime
+recognition.interimResults = true;
+
+// creating the p-element.
+let p = document.createElement("p");
+
+// result eventListener on record
+recognition.addEventListener("result", (e) => {
+
+  // making the p-element to be child of mainDiv
+  mainDiv.appendChild(p);
+
+  // collecting the result from speech into single line for one session.
+  const text = Array.from(e.results)
+    .map((result) => result[0])
+    .map((result) => result.transcript)
+    .join("");
+  
+  // adding in p-element
+  p.innerText = text;
+
+  // If session is ended then create new p-element for text in new session
+  if (e.results[0].isFinal) {
+    p=document.createElement('p')
+  }
+  
+});
+
+// end eventListener on record to start new session when previous is ended
+recognition.addEventListener("end", () => {
+  if (isSessionActive) {
+    recognition.start();
+  }
+});
+
+// // starting a session to record.
+// recognition.start();
+function start() {
+  debugger
+  isSessionActive = true
+  recognition.start()
+}
+function stop() {
+  debugger
+  isSessionActive = false
+  recognition.stop()
+}
+
+    </script>
+</body>
+</html>
